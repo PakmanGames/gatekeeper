@@ -5,13 +5,13 @@ Workflow:
 
 1. Open application in command line and choose to either create a database or open an existing one
 2. If choosing to create a database
-   2.1. Inputs password and storage location
-   2.2. Creates a salt, a key, and an initialization vector from randomly using OpenSSL
-   2.3. Write the file layout structure and add all of the values into the file
+   1. Inputs password and storage location
+   2. Creates a salt, a key, and an initialization vector from randomly using OpenSSL
+   3. Write the file layout structure and add all of the values into the file
 3. If choosing to open an existing one
-   3.1. Input password and storage location
-   3.2. Attempt to decrypt the information with the salt, key, and initialization vector
-   3.3. If decrypted successfully go to 5, otherwise exit
+   1. Input password and storage location
+   2. Attempt to decrypt the information with the salt, key, and initialization vector
+   3. If decrypted successfully go to 5, otherwise exit
 4. Otherwise exit
 5. Allows the user to view, add, remove, and modify existing credentials in the database and stored in an encrypted fashion 
 
