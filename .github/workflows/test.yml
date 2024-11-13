@@ -11,4 +11,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run Tests
-        run:
+        run: |
+          make ptest
+          chmod +x ./test_script > test_results.txt
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4 
+        with:
+          name: Test Results
+          path: ./test_results.txt 
