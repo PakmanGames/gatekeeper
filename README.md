@@ -19,3 +19,10 @@ Workflow:
 
 
 The first few bytes in the decrypted encrypted data should also be the magic number
+
+**Make sure to install openssl onto your system**
+
+```bash
+sudo apt-get update
+sudo apt-get install libssl-dev
+```

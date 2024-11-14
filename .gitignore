@@ -1,3 +1,4 @@
 *.gcna
 *.gcno
 *.gcov
+ptest
