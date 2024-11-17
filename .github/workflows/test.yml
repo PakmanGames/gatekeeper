@@ -14,9 +14,23 @@ jobs:
         run: |
           make ptest
           chmod +x ./test_script > test_results.txt
+          gcov ptest-main.c > main_coverage.txt
+          gcov ptest-data_encryption.c > data_encryption_coverage.txt
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4 
         with:
           name: Test Results
           path: ./test_results.txt 
+
+      - name: upload main coverage report
+        uses: actions/upload-artifact@v4 
+        with:
+          name: main coverage reprt
+          path: ./main_coverage
+
+      - name: upload data encryption coverage reprt
+        uses: actions/upload-artifact@v4
+        with:
+          name: data encryption coverage report
+          path: ./data_encryption_coverage.txt
