@@ -2,6 +2,9 @@
 #include <string.h>
 #include "data_encryption.h"
 
+#include <sqlite3.h>
+#include "database.h"
+
 void print_bloated(char *text, int length)
 {
     for (int i = 0; i < length; i++)
@@ -67,7 +70,20 @@ int test_encrypt_decrypt()
     return 0;
 }
 
+int test_database_stuff() {
+    char *database_path = "passwords.db";
+    sqlite3 *db = NULL;
+    
+    if (!initialize_database(database_path, &db)) {
+        printf("uh oh no good");
+        return 1;
+    }
+
+    return 0;
+}
+
 int main()
 {
-    return test_encrypt_decrypt();
+    return test_database_stuff();
+    // return test_encrypt_decrypt();
 }
