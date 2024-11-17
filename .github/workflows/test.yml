@@ -2,7 +2,7 @@ name: CI CD - GateKeeper - test YML
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "patrick-testing" ]
 
 jobs:
   build:
