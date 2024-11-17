@@ -73,9 +73,15 @@ int test_encrypt_decrypt()
 int test_database_stuff() {
     char *database_path = "passwords.db";
     sqlite3 *db = NULL;
-    
-    if (!initialize_database(database_path, &db)) {
+
+    if (!open_connection(&db, database_path)) {
         printf("uh oh no good");
+        return 1;
+    }
+    
+    if (!initialize_database(db)) {
+        printf("uh oh no good");
+        close_connection(db);
         return 1;
     }
 
