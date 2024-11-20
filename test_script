@@ -45,7 +45,7 @@ test() {
 }
 
 # test cases put below
-
+test '' '' '' '' 
 
 # clean up
 rm test_err.txt test_out.txt

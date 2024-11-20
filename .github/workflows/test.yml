@@ -2,7 +2,7 @@ name: CI CD - GateKeeper - test YML
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "patrick-testing" ]
 
 jobs:
   build:
@@ -11,11 +11,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run Tests
-        run: |
-          make ptest
-          chmod +x ./test_script > test_results.txt
-          gcov ptest-main.c > main_coverage.txt
-          gcov ptest-data_encryption.c > data_encryption_coverage.txt
+        run: make ptest; ./test_script > test_results.txt; gcov ptest-main.c > main_coverage.txt; gcov ptest-data_encryption.c > data_encryption_coverage.txt
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4 
