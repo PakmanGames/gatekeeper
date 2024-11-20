@@ -98,6 +98,25 @@ int test_database_stuff() {
     } else {
         printf("Added password for %s where the password is %s\n", name, password);
     }
+    
+    // test adding another password
+    char *name2 = "Facebook";
+    if (!add_password(db, name2, password)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Added password for %s where the password is %s\n", name2, password);
+    }
+
+    // test deleting a password
+    if (!delete_password(db, name2)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Deleted password for %s\n", name2);
+    }
     return 0;
 }
 

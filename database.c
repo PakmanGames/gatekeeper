@@ -71,3 +71,22 @@ int add_password(sqlite3 *db, char *name, char *password) {
     }
     return 1;
 }
+
+int delete_password(sqlite3 *db, char *name) {
+    sqlite3_stmt *stmt;
+    char *sql = "DELETE FROM passwords WHERE name = ?;";
+
+    int status = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+    if (!check_status(status, db)) {
+        return 0;
+    }
+
+    // Bind the values to the ?
+    sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+
+    status = sqlite3_step(stmt);
+    if (!check_is_done(status, db)) {
+        return 0;
+    }
+    return 1;
+}
