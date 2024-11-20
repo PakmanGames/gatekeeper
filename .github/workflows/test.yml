@@ -10,6 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: deps
+        run: sudo apt-get update 
+             sudo apt-get install libssl-dev
+             sudo apt-get install libsqlite3-dev
+
       - name: Run Tests
         run: make ptest; chmod +x ./test_script > test_results.txt; gcov ptest-main.c > main_coverage.txt; gcov ptest-data_encryption.c > data_encryption_coverage.txt
 
