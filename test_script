@@ -45,7 +45,7 @@ test() {
 }
 
 # test cases put below
-test './ptest' 'test_cases/empty_test.txt' 'test_cases/dat_output.txt' 'test_cases/empty.txt' 
+test './ptest' 'test_cases/data_test.txt' 'test_cases/data_output.txt' 'test_cases/empty.txt' 
 
 # clean up
 rm test_err.txt test_out.txt
