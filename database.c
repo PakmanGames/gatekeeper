@@ -23,8 +23,7 @@ int initialize_database(sqlite3 *db) {
     char *sql = "CREATE TABLE IF NOT EXISTS passwords ("
                       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                       "name TEXT NOT NULL, "
-                      "encrypted_password TEXT NOT NULL, "
-                      "iv TEXT NOT NULL);";
+                      "password TEXT NOT NULL);";
 
     int status = sqlite3_exec(db, sql, 0, 0, &err_msg);
     if (status != SQLITE_OK) {
@@ -35,5 +34,27 @@ int initialize_database(sqlite3 *db) {
     }
 
     printf("it work success\n");
+    return 1;
+}
+
+int add_password(sqlite3 *db, char *name, char *password) {
+    sqlite3_stmt *stmt;
+    char *sql = "INSERT INTO passwords (name, password) VALUES (?, ?);";
+
+    int status = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+    if (status != SQLITE_OK) {
+        printf("error: %s\n", sqlite3_errmsg(db));
+        return 0;
+    }
+
+    // Bind the values to the ?
+    sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
+
+    status = sqlite3_step(stmt);
+    if (status != SQLITE_DONE) {
+        printf("error: %s\n", sqlite3_errmsg(db));
+        return 0;
+    }
     return 1;
 }

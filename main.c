@@ -70,21 +70,34 @@ int test_encrypt_decrypt()
     return 0;
 }
 
+// testing function to test database functions
 int test_database_stuff() {
     char *database_path = "passwords.db";
     sqlite3 *db = NULL;
 
+    // open connection
     if (!open_connection(&db, database_path)) {
         printf("uh oh no good");
         return 1;
     }
     
+    // initialize db
     if (!initialize_database(db)) {
         printf("uh oh no good");
         close_connection(db);
         return 1;
     }
 
+    // test adding a password
+    char *name = "Instagram";
+    char *password = "Password123";
+    if (!add_password(db, name, password)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Added password for %s where the password is %s\n", name, password);
+    }
     return 0;
 }
 
