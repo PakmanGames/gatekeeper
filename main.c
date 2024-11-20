@@ -117,6 +117,24 @@ int test_database_stuff() {
     } else {
         printf("Deleted password for %s\n", name2);
     }
+
+    // close connection
+    close_connection(db);
+    // open connection again just to test
+    if (!open_connection(&db, database_path)) {
+        printf("uh oh no good");
+        return 1;
+    }
+
+    // test getting a password
+    if (!get_password(db, name)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Got password for %s\n", name);
+    }
+
     return 0;
 }
 

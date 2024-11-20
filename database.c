@@ -90,3 +90,27 @@ int delete_password(sqlite3 *db, char *name) {
     }
     return 1;
 }
+
+int get_password(sqlite3 *db, char *name) {
+    sqlite3_stmt *stmt;
+    char *sql = "SELECT password FROM passwords WHERE name = ?;";
+
+    int status = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+    if (!check_status(status, db)) {
+        return 0;
+    }
+
+    // Bind the values to the ?
+    sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+
+    status = sqlite3_step(stmt);
+    if (status == SQLITE_ROW) {
+        char *your_password = (char *)sqlite3_column_text(stmt, 0);
+        printf("Password for %s is %s\n", name, your_password);
+        return 1;
+    } else if (!check_is_done(status, db)) {
+        return 0;
+    }
+
+    return 1;
+}
