@@ -25,4 +25,5 @@ The first few bytes in the decrypted encrypted data should also be the magic num
 ```bash
 sudo apt-get update
 sudo apt-get install libssl-dev
+sudo apt-get install libsqlite3-dev
 ```

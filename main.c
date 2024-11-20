@@ -2,6 +2,9 @@
 #include <string.h>
 #include "data_encryption.h"
 
+#include <sqlite3.h>
+#include "database.h"
+
 void print_bloated(char *text, int length)
 {
     for (int i = 0; i < length; i++)
@@ -67,7 +70,58 @@ int test_encrypt_decrypt()
     return 0;
 }
 
+// testing function to test database functions
+int test_database_stuff() {
+    char *database_path = "passwords.db";
+    sqlite3 *db = NULL;
+
+    // open connection
+    if (!open_connection(&db, database_path)) {
+        printf("uh oh no good");
+        return 1;
+    }
+    
+    // initialize db
+    if (!initialize_database(db)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    }
+
+    // test adding a password
+    char *name = "Instagram";
+    char *password = "Password123";
+    if (!add_password(db, name, password)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Added password for %s where the password is %s\n", name, password);
+    }
+    
+    // test adding another password
+    char *name2 = "Facebook";
+    if (!add_password(db, name2, password)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Added password for %s where the password is %s\n", name2, password);
+    }
+
+    // test deleting a password
+    if (!delete_password(db, name2)) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Deleted password for %s\n", name2);
+    }
+    return 0;
+}
+
 int main()
 {
-    return test_encrypt_decrypt();
+    return test_database_stuff();
+    // return test_encrypt_decrypt();
 }
