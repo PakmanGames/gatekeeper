@@ -127,12 +127,16 @@ int test_database_stuff() {
     }
 
     // test getting a password
-    if (!get_password(db, name)) {
+
+    struct credentials *result = get_password(db, name);
+
+    if (!result) {
         printf("uh oh no good");
         close_connection(db);
         return 1;
     } else {
-        printf("Got password for %s\n", name);
+        printf("Got password for %s\n", result->name);
+        printf("The password is %s\n", result->password);
     }
 
     // Test updating a password
