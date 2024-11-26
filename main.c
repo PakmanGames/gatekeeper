@@ -148,6 +148,20 @@ int test_database_stuff() {
         printf("Updated password for %s\n", name);
     }
 
+    // Test getting all passwords
+    struct credentials_list *list = list_passwords(db);
+    if (!list) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Got all passwords\n");
+        for (int i = 0; i < list->length; i++) {
+            printf("Name: %s\n", list->entries[i].name);
+            printf("Password: %s\n", list->entries[i].password);
+        }
+    }
+
     return 0;
 }
 
