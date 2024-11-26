@@ -135,6 +135,15 @@ int test_database_stuff() {
         printf("Got password for %s\n", name);
     }
 
+    // Test updating a password
+    if (!update_password(db, name, password, "NewPassword123")) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Updated password for %s\n", name);
+    }
+
     return 0;
 }
 
