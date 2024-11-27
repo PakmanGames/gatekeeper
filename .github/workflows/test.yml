@@ -1,4 +1,4 @@
-name: CI CD - GateKeeper - test YML
+name: CI CD - GateKeeper - Test YML
 
 on:
   push:
@@ -10,13 +10,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Tests
+      - name: Install Dependencies
         run: |
-          make ptest
-          chmod +x ./test_script > test_results.txt
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev libsqlite3-dev gcc-10 g++-10
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4 
+      - name: Compile with Coverage
+        run: |
+          gcc -Wall -Werror -g --coverage -I/usr/local/include -I/opt/local/include \
+              -o ptest main.c data_encryption.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
+              -lcrypto -lssl
+
+      - name: Execute Tests
+        run: |
+          ./ptest || { echo "Test execution failed"; exit 1; }
+
+      - name: Generate Coverage Reports
+        run: |
+          gcov ptest-main.c > main_coverage.txt
+          gcov ptest-data_encryption.c > data_encryption_coverage.txt
+
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v4
         with:
-          name: Test Results
-          path: ./test_results.txt 
+          name: Coverage Reports
+          path: |
+            main_coverage.txt
+            data_encryption_coverage.txt
