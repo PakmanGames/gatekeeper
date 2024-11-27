@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS passwords (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    encrypted_password TEXT NOT NULL,
+    iv TEXT NOT NULL
+);
