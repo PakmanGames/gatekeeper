@@ -117,6 +117,51 @@ int test_database_stuff() {
     } else {
         printf("Deleted password for %s\n", name2);
     }
+
+    // close connection
+    close_connection(db);
+    // open connection again just to test
+    if (!open_connection(&db, database_path)) {
+        printf("uh oh no good");
+        return 1;
+    }
+
+    // test getting a password
+
+    struct credentials *result = get_password(db, name);
+
+    if (!result) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Got password for %s\n", result->name);
+        printf("The password is %s\n", result->password);
+    }
+
+    // Test updating a password
+    if (!update_password(db, name, password, "NewPassword123")) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Updated password for %s\n", name);
+    }
+
+    // Test getting all passwords
+    struct credentials_list *list = list_passwords(db);
+    if (!list) {
+        printf("uh oh no good");
+        close_connection(db);
+        return 1;
+    } else {
+        printf("Got all passwords\n");
+        for (int i = 0; i < list->length; i++) {
+            printf("Name: %s\n", list->entries[i].name);
+            printf("Password: %s\n", list->entries[i].password);
+        }
+    }
+
     return 0;
 }
 
