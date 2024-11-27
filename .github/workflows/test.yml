@@ -15,32 +15,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libssl-dev libsqlite3-dev gcc-10 g++-10
 
-      - name: Debug File Permissions
+      - name: Compile with Coverage
         run: |
-          ls -l
-          sudo chown -R $USER:$USER .
-          chmod +x ptest || true
+          gcc -Wall -Werror -g --coverage -I/usr/local/include -I/opt/local/include \
+              -o ptest main.c data_encryption.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
+              -lcrypto -lssl
 
-      - name: Run Tests with Debug
+      - name: Execute Tests
         run: |
-          make ptest || { echo "Make failed"; ls -l; exit 1; }
+          ./ptest || { echo "Test execution failed"; exit 1; }
+
+      - name: Generate Coverage Reports
+        run: |
           gcov ptest-main.c > main_coverage.txt
           gcov ptest-data_encryption.c > data_encryption_coverage.txt
 
-      - name: Upload Test Results
+      - name: Upload Coverage Reports
         uses: actions/upload-artifact@v4
         with:
-          name: Test Results
-          path: ./test_results.txt
-
-      - name: Upload Main Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: Main Coverage Report
-          path: ./main_coverage.txt
-
-      - name: Upload Data Encryption Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: Data Encryption Coverage Report
-          path: ./data_encryption_coverage.txt
+          name: Coverage Reports
+          path: |
+            main_coverage.txt
+            data_encryption_coverage.txt
