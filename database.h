@@ -1,3 +1,4 @@
+#include <sqlite3.h> 
 // Check status codes functions
 int check_status(int status, sqlite3 *db);
 int check_is_done(int status, sqlite3 *db);

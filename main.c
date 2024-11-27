@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "data_encryption.h"
-
-#include <sqlite3.h>
+#include "user_interface.h"
 #include "database.h"
 
 void print_bloated(char *text, int length)
@@ -76,18 +75,21 @@ int test_encrypt_decrypt()
 }
 
 // testing function to test database functions
-int test_database_stuff() {
+int test_database_stuff()
+{
     char *database_path = "passwords.db";
     sqlite3 *db = NULL;
 
     // open connection
-    if (!open_connection(&db, database_path)) {
+    if (!open_connection(&db, database_path))
+    {
         printf("uh oh no good");
         return 1;
     }
-    
+
     // initialize db
-    if (!initialize_database(db)) {
+    if (!initialize_database(db))
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
@@ -96,37 +98,47 @@ int test_database_stuff() {
     // test adding a password
     char *name = "Instagram";
     char *password = "Password123";
-    if (!add_password(db, name, password)) {
+    if (!add_password(db, name, password))
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Added password for %s where the password is %s\n", name, password);
     }
-    
+
     // test adding another password
     char *name2 = "Facebook";
-    if (!add_password(db, name2, password)) {
+    if (!add_password(db, name2, password))
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Added password for %s where the password is %s\n", name2, password);
     }
 
     // test deleting a password
-    if (!delete_password(db, name2)) {
+    if (!delete_password(db, name2))
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Deleted password for %s\n", name2);
     }
 
     // close connection
     close_connection(db);
     // open connection again just to test
-    if (!open_connection(&db, database_path)) {
+    if (!open_connection(&db, database_path))
+    {
         printf("uh oh no good");
         return 1;
     }
@@ -135,33 +147,43 @@ int test_database_stuff() {
 
     struct credentials *result = get_password(db, name);
 
-    if (!result) {
+    if (!result)
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Got password for %s\n", result->name);
         printf("The password is %s\n", result->password);
     }
 
     // Test updating a password
-    if (!update_password(db, name, password, "NewPassword123")) {
+    if (!update_password(db, name, password, "NewPassword123"))
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Updated password for %s\n", name);
     }
 
     // Test getting all passwords
     struct credentials_list *list = list_passwords(db);
-    if (!list) {
+    if (!list)
+    {
         printf("uh oh no good");
         close_connection(db);
         return 1;
-    } else {
+    }
+    else
+    {
         printf("Got all passwords\n");
-        for (int i = 0; i < list->length; i++) {
+        for (int i = 0; i < list->length; i++)
+        {
             printf("Name: %s\n", list->entries[i].name);
             printf("Password: %s\n", list->entries[i].password);
         }
@@ -172,6 +194,7 @@ int test_database_stuff() {
 
 int main()
 {
-    return test_database_stuff();
-    // return test_encrypt_decrypt();
+    // return test_database_stuff();
+    //  return test_encrypt_decrypt();
+    return not_main();
 }

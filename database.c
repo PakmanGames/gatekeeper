@@ -1,17 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <sqlite3.h>
 #include <string.h>
+#include "database.h"
 
-struct credentials {
-    char *name;
-    char *password;
-};
-
-struct credentials_list {
-    struct credentials *entries;
-    int length;
-};
 
 int check_status(int status, sqlite3 *db) {
     if (status != SQLITE_OK) {
