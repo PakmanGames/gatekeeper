@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "user_interface.h"
+
+//Define max length for database name
+#define MAX_NAME_LENGTH 50 
+//Define min and max length for database password
+#define MIN_PASSWORD_LENGTH 8 
+#define MAX_PASSWORD_LENGTH 16 
 
 
 //Function to display usage instructions
@@ -73,7 +80,7 @@ int main() {
     if (fgets(input, sizeof(input), stdin) != NULL) {
 
         //If the input matches "--help" then display help info
-        if (strncmp(input, "--help", 4) == 0) {
+        if (strncmp(input, "--help", 6) == 0) {
            
             //Call help function
             help();
@@ -81,7 +88,7 @@ int main() {
             exit(0);
         }
         
-        //Convert the input string to an integer for further processing
+        //Convert the input string to an integer for choices 1 and 2
         choice = atoi(input);
 
     //If user input is invalid
