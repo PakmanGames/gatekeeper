@@ -1,6 +1,12 @@
 // password_manager.c
 
 #include "password_manager.h" 
+#include "user_interface.h"
+
+//Define max number of entries allowed in database and size constraints
+#define MAX_PASS_ENTRIES 100
+#define MAX_NAME_LENGTH 50
+#define MAX_PASSWORD_LENGTH 50
 
 //Array to store password entries
 PasswordEntry database[MAX_PASS_ENTRIES]; 
