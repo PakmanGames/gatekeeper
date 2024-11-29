@@ -9,6 +9,7 @@ sqlite3 *db;
 #define DATABASE_CONN ":memory:"
 #define MAX_NAME_LENGTH 50
 #define MAX_PASSWORD_LENGTH 50
+#define DEBUG 1
 char *password;
 unsigned char *salt;
 char *db_name;
@@ -209,7 +210,12 @@ void save_database()
     printf("Encrypted bytes\n");
 #endif
 
+    char *db_name_unencrypted = malloc(strlen(db_name) + 7 * sizeof(char));
+    sprintf(db_name_unencrypted, "%s_unenc", db_name);
+    printf("Unencrypted database saved to file: %s\n", db_name_unencrypted);
+
     FILE *file = fopen(db_name, "wb");
+    FILE *un_file = fopen(db_name_unencrypted, "wb");
     if (!file)
     {
         printf("Error: Could not open file for writing.\n");
@@ -218,7 +224,9 @@ void save_database()
 
     fwrite(salt, 1, SALT_LEN, file);
     fwrite(ciphertext, 1, length, file);
+    fwrite(data, 1, db_size, un_file);
     fclose(file);
+    fclose(un_file);
     free(ciphertext);
 
 #ifdef DEBUG
@@ -229,65 +237,146 @@ void save_database()
     printf("Database saved to file.\n");
 }
 
-void verify_password(char *o_password, char *o_db_name)
+int verify_password(char *o_password, char *o_db_name)
 {
+#ifdef DEBUG
+    printf("Verifying password...\n");
+#endif
     if (db != NULL)
     {
         close_connection(db);
     }
-
+#ifdef DEBUG
+    printf("Freed db\n");
+#endif
     if (password != NULL)
     {
         free(password);
     }
-    password = malloc(MAX_PASSWORD_LENGTH * sizeof(char));
+
+#ifdef DEBUG
+    printf("Freed password\n");
+#endif
+
+    password = malloc(strlen(o_password) * sizeof(char));
     strcpy(password, o_password);
 
+#ifdef DEBUG
+    printf("Password copied\n");
+#endif
     if (db_name != NULL)
     {
         free(db_name);
     }
-    db_name = malloc(MAX_NAME_LENGTH * sizeof(char));
+    db_name = malloc(strlen(o_db_name) * sizeof(char));
     strcpy(db_name, o_db_name);
+
+#ifdef DEBUG
+    printf("DB name copied\n");
+#endif
 
     FILE *file = fopen(db_name, "rb");
     if (!file)
     {
         printf("Error: Could not open file for reading.\n");
-        return;
+        return 0;
     }
 
     if (salt != NULL)
     {
         free(salt);
     }
-    salt = malloc(SALT_LEN * sizeof(char));
-    fread(salt, 1, SALT_LEN, file);
+    salt = malloc((SALT_LEN + 1) * sizeof(char));
+#ifdef DEBUG
+    printf("Salt mallocated\n");
+#endif
+    if (fread(salt, 1, SALT_LEN, file) != SALT_LEN)
+    {
+        printf("Error: Could not read salt from file.\n");
+        free(salt);
+        fclose(file);
+        return 0;
+    }
+#ifdef DEBUG
+    printf("Salt read\n");
+#endif
+    salt[SALT_LEN] = '\0';
+
     fseek(file, 0, SEEK_END);
-
-    int length = ftell(file) - SALT_LEN;
-
+    long fileSize = ftell(file);
     fseek(file, SALT_LEN, SEEK_SET);
+#ifdef DEBUG
+    printf("File size: %ld\n", fileSize);
+#endif
+    int length = fileSize - SALT_LEN;
 
-    char *ciphertext = malloc(length * sizeof(char));
-    fread(ciphertext, 1, length, file);
+#ifdef DEBUG
+    printf("Length: %d\n", length);
+#endif
+    if (length <= 0)
+    {
+        printf("Error: File is empty.\n");
+        fclose(file);
+        return 0;
+    }
+
+    char *ciphertext = malloc((length + 1) * sizeof(char));
+
+#ifdef DEBUG
+    printf("Ciphertext mallocated\n");
+#endif
+    if (fread(ciphertext, 1, length, file) != length)
+    {
+        printf("Error: Could not read ciphertext from file.\n");
+        free(ciphertext);
+        fclose(file);
+        return 0;
+    }
+#ifdef DEBUG
+    printf("Ciphertext read\n");
+#endif
     fclose(file);
+    ciphertext[length] = '\0';
 
     char *plaintext = malloc(length * sizeof(char));
+#ifdef DEBUG
+    printf("Plaintext mallocated\n");
+#endif
     int plaintext_length;
     if (!decrypt_data_salt_pepper(ciphertext, length, password, salt, plaintext, &plaintext_length))
     {
         printf("Error: Could not decrypt database.\n");
-        return;
+        return 0;
+    }
+#ifdef DEBUG
+    printf("Decrypted\n");
+#endif
+    free(ciphertext);
+
+#ifdef DEBUG
+    printf("Freed\n");
+#endif
+
+    if (!open_connection(&db, DATABASE_CONN))
+    {
+        printf("Error: Could not open database connection.\n");
+        return 0;
     }
 
-    if (sqlite3_deserialize(db, "main", (unsigned char *)plaintext, plaintext_length, length, SQLITE_DESERIALIZE_RESIZEABLE) != SQLITE_OK)
+#ifdef DEBUG
+    FILE *un_file = fopen("unenc.db", "wb");
+    fwrite(plaintext, 1, plaintext_length, un_file);
+    fclose(un_file);
+#endif
+    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, plaintext_length, plaintext_length, SQLITE_DESERIALIZE_RESIZEABLE);
+    if (status != SQLITE_OK)
     {
         printf("Error: Could not deserialize database.\n");
-        return;
+        return 0;
     }
 
     printf("Password verified. Access granted.\n");
-    free(ciphertext);
     free(plaintext);
+
+    return 1;
 }
