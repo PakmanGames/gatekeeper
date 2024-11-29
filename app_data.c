@@ -375,6 +375,23 @@ int verify_password(char *o_password, char *o_db_name)
         return 0;
     }
 
+    if (db != NULL)
+    {
+
+        if (sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0) == SQLITE_OK)
+        {
+            printf("Database connection is valid.\n");
+        }
+        else
+        {
+            printf("Database connection is not valid.\n");
+        }
+    }
+    else
+    {
+        printf("Error: db pointer is null.\n");
+    }
+
     printf("Password verified. Access granted.\n");
     free(plaintext);
 

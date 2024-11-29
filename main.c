@@ -3,6 +3,11 @@
 #include "data_encryption.h"
 #include "user_interface.h"
 #include "database.h"
+#define DEBUG 1
+#ifdef DEBUG
+#include <sqlite3.h>
+#include <stdlib.h>
+#endif
 
 void print_bloated(char *text, int length)
 {
@@ -192,9 +197,80 @@ int test_database_stuff()
     return 0;
 }
 
+int test_read_sqlite_from_file()
+{
+    sqlite3 *db;
+#define DATABASE_CONN ":memory:"
+
+    if (!open_connection(&db, DATABASE_CONN))
+    {
+        printf("Error: Could not open database connection.\n");
+        return 0;
+    }
+
+    FILE *un_file = fopen("unenc.db", "rb");
+    fseek(un_file, 0, SEEK_END);
+    int length = ftell(un_file);
+    fseek(un_file, 0, SEEK_SET);
+
+    char *plaintext = malloc(length * sizeof(char));
+    int plaintext_length = length;
+    if (fread(plaintext, 1, length, un_file) != length)
+    {
+        printf("Error: Could not read plaintext from file.\n");
+        free(plaintext);
+        fclose(un_file);
+        return 0;
+    }
+    fclose(un_file);
+
+    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, plaintext_length, plaintext_length, SQLITE_DESERIALIZE_RESIZEABLE);
+    if (status != SQLITE_OK)
+    {
+        printf("Error: Could not deserialize database. SQLite error code: %d, Message: %s\n", status, sqlite3_errmsg(db));
+        return 0;
+    }
+
+    // Check if db is valid
+    if (db != NULL)
+    {
+        int status_check = sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0);
+        if (status_check == SQLITE_OK)
+        {
+            printf("Database connection is valid.\n");
+        }
+        else
+        {
+            printf("Database connection is not valid.\n");
+        }
+    }
+    else
+    {
+        printf("Error: db pointer is null.\n");
+    }
+
+    // Run a simple query to check database validity
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, "SELECT 1;", -1, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        printf("Error preparing statement after deserialization: %s\n", sqlite3_errmsg(db));
+    }
+    else
+    {
+        printf("Statement prepared successfully.\n");
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
+
+    printf("Password verified. Access granted.\n");
+    free(plaintext);
+    return 0;
+}
+
 int main()
 {
     // return test_database_stuff();
     //  return test_encrypt_decrypt();
-    return not_main();
+    return test_read_sqlite_from_file();
 }
