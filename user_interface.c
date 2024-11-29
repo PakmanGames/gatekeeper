@@ -111,7 +111,7 @@ void app_view()
             printf("Invalid choice. Please enter a number between 1 and 6.\n");
         }
 
-        save_database(); // Placeholder function to save the database
+        // save_database(); // Placeholder function to save the database
 
     } while (choice != 6); // Loop to keep the app running until user exits
 }
