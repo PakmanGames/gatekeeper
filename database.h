@@ -1,4 +1,4 @@
-#include <sqlite3.h> 
+#include <sqlite3.h>
 // Check status codes functions
 int check_status(int status, sqlite3 *db);
 int check_is_done(int status, sqlite3 *db);
@@ -11,12 +11,14 @@ void close_connection(sqlite3 *db);
 int initialize_database(sqlite3 *db);
 
 // Struct for when we get a password
-struct credentials {
+struct credentials
+{
     char *name;
     char *password;
 };
 
-struct credentials_list {
+struct credentials_list
+{
     struct credentials *entries;
     int length;
 };

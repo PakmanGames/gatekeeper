@@ -199,14 +199,6 @@ int test_database_stuff()
 
 int test_read_sqlite_from_file()
 {
-    sqlite3 *db;
-#define DATABASE_CONN ":memory:"
-
-    if (!open_connection(&db, DATABASE_CONN))
-    {
-        printf("Error: Could not open database connection.\n");
-        return 0;
-    }
 
     FILE *un_file = fopen("unenc.db", "rb");
     fseek(un_file, 0, SEEK_END);
@@ -214,7 +206,7 @@ int test_read_sqlite_from_file()
     fseek(un_file, 0, SEEK_SET);
 
     char *plaintext = malloc(length * sizeof(char));
-    int plaintext_length = length;
+    // int plaintext_length = length;
     if (fread(plaintext, 1, length, un_file) != length)
     {
         printf("Error: Could not read plaintext from file.\n");
@@ -224,7 +216,16 @@ int test_read_sqlite_from_file()
     }
     fclose(un_file);
 
-    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, plaintext_length, plaintext_length, SQLITE_DESERIALIZE_RESIZEABLE);
+    sqlite3 *db;
+#define DATABASE_CONN ":memory:"
+
+    if (!open_connection(&db, DATABASE_CONN))
+    {
+        printf("Error: Could not open database connection.\n");
+        return 0;
+    }
+
+    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, length, length, SQLITE_DESERIALIZE_FREEONCLOSE);
     if (status != SQLITE_OK)
     {
         printf("Error: Could not deserialize database. SQLite error code: %d, Message: %s\n", status, sqlite3_errmsg(db));
@@ -232,7 +233,7 @@ int test_read_sqlite_from_file()
     }
 
     // Check if db is valid
-    if (db != NULL)
+    /*if (db != NULL)
     {
         int status_check = sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0);
         if (status_check == SQLITE_OK)
@@ -247,7 +248,7 @@ int test_read_sqlite_from_file()
     else
     {
         printf("Error: db pointer is null.\n");
-    }
+    }*/
 
     // Run a simple query to check database validity
     sqlite3_stmt *stmt;
@@ -265,6 +266,7 @@ int test_read_sqlite_from_file()
 
     printf("Password verified. Access granted.\n");
     free(plaintext);
+    printf("SQLITE verison: %s\n", sqlite3_libversion());
     return 0;
 }
 
@@ -272,5 +274,6 @@ int main()
 {
     // return test_database_stuff();
     //  return test_encrypt_decrypt();
-    return test_read_sqlite_from_file();
+    // return test_read_sqlite_from_file();
+    return not_main();
 }

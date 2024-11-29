@@ -8,4 +8,4 @@ ui_test: user_interface.c user_interface.h data_encryption.h data_encryption.c
 	gcc $(INCLUDE_FLAGS) -o ui_test data_encryption.c user_interface.c $(LIBRARY_FLAGS)
 
 clean:
-	rm -f test; rm - f ui_test;
+	rm -f ptest; rm -f ui_test;

@@ -1,3 +1,4 @@
+#include "app_data.h"
 #include "database.h"
 #include "data_encryption.h"
 #include <string.h>
@@ -5,16 +6,16 @@
 #include <stdlib.h>
 #include <openssl/evp.h>
 
-sqlite3 *db;
 #define DATABASE_CONN ":memory:"
 #define MAX_NAME_LENGTH 50
 #define MAX_PASSWORD_LENGTH 50
-#define DEBUG 1
+
+sqlite3 *db;
+sqlite3_int64 db_size;
 char *password;
 unsigned char *salt;
 char *db_name;
-
-#define DEBUG 1
+unsigned char *data;
 
 void create_database(char *o_password, char *o_db_name)
 {
@@ -39,14 +40,26 @@ void create_database(char *o_password, char *o_db_name)
         close_connection(db);
         return;
     }
+    save_database(); // Placeholder function to save the database
 }
 
 void close_database()
 {
-    close_connection(db);
+#ifdef DEBUG
+    printf("Freeing password...\n");
+#endif
     free(password);
+#ifdef DEBUG
+    printf("Freeing db name...\n");
+#endif
     free(db_name);
+#ifdef DEBUG
+    printf("Freeing salt...\n");
+#endif
     free(salt);
+#ifdef DEBUG
+    printf("Freeing data...\n");
+#endif
 }
 
 void list_all_credentials()
@@ -173,13 +186,13 @@ void change_database_password()
 
     printf("Database password changed successfully.\n");
 }
+
 void save_database()
 {
 #ifdef DEBUG
     printf("Saving database to file...\n");
 #endif
-    sqlite3_int64 db_size;
-    unsigned char *data = sqlite3_serialize(db, "main", &db_size, 0);
+    data = sqlite3_serialize(db, "main", &db_size, 0);
 
     if (data == NULL)
     {
@@ -208,33 +221,33 @@ void save_database()
 
 #ifdef DEBUG
     printf("Encrypted bytes\n");
-#endif
 
     char *db_name_unencrypted = malloc(strlen(db_name) + 7 * sizeof(char));
     sprintf(db_name_unencrypted, "%s_unenc", db_name);
     printf("Unencrypted database saved to file: %s\n", db_name_unencrypted);
 
-    FILE *file = fopen(db_name, "wb");
     FILE *un_file = fopen(db_name_unencrypted, "wb");
     if (!file)
     {
         printf("Error: Could not open file for writing.\n");
         return;
     }
+    fwrite(data, 1, db_size, un_file);
+    fclose(un_file);
+#endif
+
+    FILE *file = fopen(db_name, "wb");
 
     fwrite(salt, 1, SALT_LEN, file);
     fwrite(ciphertext, 1, length, file);
-    fwrite(data, 1, db_size, un_file);
     fclose(file);
-    fclose(un_file);
     free(ciphertext);
 
 #ifdef DEBUG
     printf("Wrote bytes to file\n");
-#endif
-
     // Save the database to a file
     printf("Database saved to file.\n");
+#endif
 }
 
 int verify_password(char *o_password, char *o_db_name)
@@ -338,12 +351,11 @@ int verify_password(char *o_password, char *o_db_name)
     fclose(file);
     ciphertext[length] = '\0';
 
-    char *plaintext = malloc(length * sizeof(char));
+    data = malloc(length * sizeof(char));
 #ifdef DEBUG
     printf("Plaintext mallocated\n");
 #endif
-    int plaintext_length;
-    if (!decrypt_data_salt_pepper(ciphertext, length, password, salt, plaintext, &plaintext_length))
+    if (!decrypt_data_salt_pepper(ciphertext, length, password, salt, (char *)data, (int *)&db_size))
     {
         printf("Error: Could not decrypt database.\n");
         return 0;
@@ -365,35 +377,17 @@ int verify_password(char *o_password, char *o_db_name)
 
 #ifdef DEBUG
     FILE *un_file = fopen("unenc.db", "wb");
-    fwrite(plaintext, 1, plaintext_length, un_file);
+    fwrite(data, 1, db_size, un_file);
     fclose(un_file);
 #endif
-    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, plaintext_length, plaintext_length, SQLITE_DESERIALIZE_RESIZEABLE);
+    int status = sqlite3_deserialize(db, "main", data, db_size, db_size, SQLITE_DESERIALIZE_FREEONCLOSE);
     if (status != SQLITE_OK)
     {
         printf("Error: Could not deserialize database.\n");
         return 0;
     }
 
-    if (db != NULL)
-    {
-
-        if (sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0) == SQLITE_OK)
-        {
-            printf("Database connection is valid.\n");
-        }
-        else
-        {
-            printf("Database connection is not valid.\n");
-        }
-    }
-    else
-    {
-        printf("Error: db pointer is null.\n");
-    }
-
     printf("Password verified. Access granted.\n");
-    free(plaintext);
 
     return 1;
 }

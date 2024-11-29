@@ -5,8 +5,6 @@
 #include <openssl/err.h>
 #include <string.h>
 
-#define DEBUG 1
-
 int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, const unsigned char *iv, char *ciphertext, int *ciphertext_len)
 {
 
@@ -151,18 +149,22 @@ int encrypt_data_salt_pepper(char *plaintext, int plaintext_length, const char *
     generate_key_iv(password, salt, key, iv);
 #ifdef DEBUG
     printf("Key and IV generated\n");
+    printf("New plain text\n");
 #endif
 
-    printf("New plain text\n");
     int new_plaintext_length = MAGIC_NUMBER_LENGTH + plaintext_length;
     char new_plaintext[new_plaintext_length];
 
-    printf("Copying...\n");
-    memcpy(new_plaintext, MAGIC_NUMBER, MAGIC_NUMBER_LENGTH);
-    printf("Copied some\n");
-    memcpy(new_plaintext + MAGIC_NUMBER_LENGTH, plaintext, plaintext_length);
-    printf("Copied\n");
 #ifdef DEBUG
+    printf("Copying...\n");
+#endif
+    memcpy(new_plaintext, MAGIC_NUMBER, MAGIC_NUMBER_LENGTH);
+#ifdef DEBUG
+    printf("Copied some\n");
+#endif
+    memcpy(new_plaintext + MAGIC_NUMBER_LENGTH, plaintext, plaintext_length);
+#ifdef DEBUG
+    printf("Copied\n");
     printf("Encrypting data with salt and pepper...\n");
 #endif
     // Encrypt the plaintext
