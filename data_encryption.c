@@ -5,6 +5,8 @@
 #include <openssl/err.h>
 #include <string.h>
 
+#define DEBUG 1
+
 int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, const unsigned char *iv, char *ciphertext, int *ciphertext_len)
 {
 
@@ -26,6 +28,11 @@ int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, con
         return 0;
     }
 
+// Encrypt the plaintext
+#ifdef DEBUG
+    printf("Encrypting data...\n");
+#endif
+
     if (1 != EVP_EncryptUpdate(ctx, (unsigned char *)ciphertext, &len, (const unsigned char *)plaintext, plaintext_length))
     {
         // Return 0 to indicate failure
@@ -33,6 +40,10 @@ int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, con
     }
 
     *ciphertext_len = len;
+
+#ifdef DEBUG
+    printf("Encrypted data length: %d\n", len);
+#endif
 
     if (1 != EVP_EncryptFinal_ex(ctx, (unsigned char *)ciphertext + len, &len))
     {
@@ -42,6 +53,10 @@ int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, con
 
     // Add the length of the final block to the ciphertext length
     *ciphertext_len += len;
+
+#ifdef DEBUG
+    printf("Encrypted data length: %d\n", len);
+#endif
 
     // Clean up
     EVP_CIPHER_CTX_free(ctx);
@@ -129,13 +144,27 @@ int encrypt_data_salt_pepper(char *plaintext, int plaintext_length, const char *
 {
     // Generate key and IV
     unsigned char key[KEY_LEN], iv[IV_LEN];
+    printf("Generating key and IV...\n");
+#ifdef DEBUG
+    printf("Generating key and IV...\n");
+#endif
     generate_key_iv(password, salt, key, iv);
+#ifdef DEBUG
+    printf("Key and IV generated\n");
+#endif
 
+    printf("New plain text\n");
     int new_plaintext_length = MAGIC_NUMBER_LENGTH + plaintext_length;
     char new_plaintext[new_plaintext_length];
 
+    printf("Copying...\n");
     memcpy(new_plaintext, MAGIC_NUMBER, MAGIC_NUMBER_LENGTH);
+    printf("Copied some\n");
     memcpy(new_plaintext + MAGIC_NUMBER_LENGTH, plaintext, plaintext_length);
+    printf("Copied\n");
+#ifdef DEBUG
+    printf("Encrypting data with salt and pepper...\n");
+#endif
     // Encrypt the plaintext
     return encrypt(new_plaintext, new_plaintext_length, key, iv, ciphertext, ciphertext_len);
 }

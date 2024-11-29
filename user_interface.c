@@ -72,9 +72,9 @@ void app_view()
         {
             choice = atoi(vv);
 
-            if (choice < 1 || choice > 6)
+            if (choice < 1 || choice > 5)
             {
-                printf("Invalid choice. Please enter a number between 1 and 6.\n");
+                printf("Invalid choice. Please enter a number between 1 and 5.\n");
                 continue;
             }
         }
@@ -106,14 +106,15 @@ void app_view()
         case 5:
             printf("Exiting the password manager...\n");
             close_database();
-            break;
+            exit(0);
+            return;
         default:
             printf("Invalid choice. Please enter a number between 1 and 6.\n");
         }
 
-        // save_database(); // Placeholder function to save the database
+        save_database(); // Placeholder function to save the database
 
-    } while (choice != 6); // Loop to keep the app running until user exits
+    } while (choice != 5); // Loop to keep the app running until user exits
 }
 
 // Main function

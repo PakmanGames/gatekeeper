@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <openssl/evp.h>
 
 sqlite3 *db;
 #define DATABASE_CONN ":memory:"
@@ -11,6 +12,8 @@ sqlite3 *db;
 char *password;
 unsigned char *salt;
 char *db_name;
+
+#define DEBUG 1
 
 void create_database(char *o_password, char *o_db_name)
 {
@@ -171,17 +174,40 @@ void change_database_password()
 }
 void save_database()
 {
+#ifdef DEBUG
+    printf("Saving database to file...\n");
+#endif
     sqlite3_int64 db_size;
-    unsigned char *data = sqlite3_serialize(db, "main", &db_size, SQLITE_SERIALIZE_NOCOPY);
+    unsigned char *data = sqlite3_serialize(db, "main", &db_size, 0);
+
+    if (data == NULL)
+    {
+        printf("Error: Could not serialize database.\n");
+        printf("%s\n", sqlite3_errmsg(db));
+        exit(1);
+        return;
+    }
+#ifdef DEBUG
+    printf("Serialized database to bytes\n");
+#endif
 
     // Write the serialized database to a file
-    char *ciphertext = malloc(1000 * sizeof(char));
+    char *ciphertext = malloc(db_size + SALT_LEN * sizeof(char) + EVP_MAX_BLOCK_LENGTH);
+
+#ifdef DEBUG
+    printf("Ciphertext mallocated\n");
+#endif
+
     int length;
     if (!encrypt_data_salt_pepper((char *)data, db_size, password, salt, ciphertext, &length))
     {
         printf("Error: Could not encrypt database.\n");
         return;
     }
+
+#ifdef DEBUG
+    printf("Encrypted bytes\n");
+#endif
 
     FILE *file = fopen(db_name, "wb");
     if (!file)
@@ -194,6 +220,10 @@ void save_database()
     fwrite(ciphertext, 1, length, file);
     fclose(file);
     free(ciphertext);
+
+#ifdef DEBUG
+    printf("Wrote bytes to file\n");
+#endif
 
     // Save the database to a file
     printf("Database saved to file.\n");
