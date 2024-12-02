@@ -8,7 +8,7 @@ Aditya Rao, 400517325
 app_data.c handles the creation, management, and encryption of a SQLite-based database. 
 It includes operations such as adding, removing, and changing credentials, as well as managing database connections and secure data storage.
 
-This file contains:
+Contents:
 - Database connection handling
 - Functions for password encryption and decryption
 - Functions to add, remove, and change credentials
