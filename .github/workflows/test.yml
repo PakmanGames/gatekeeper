@@ -2,7 +2,7 @@ name: CI CD - GateKeeper - Test YML
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "patrick-final-testing" ]
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Compile with Coverage
         run: |
           gcc -Wall -Werror -g --coverage -I/usr/local/include -I/opt/local/include \
-              -o ptest main.c data_encryption.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
+              -o ptest main.c data_encryption.c user_interface.c database.c app_data.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
               -lcrypto -lssl
 
       - name: Execute Tests
@@ -29,6 +29,9 @@ jobs:
         run: |
           gcov ptest-main.c > main_coverage.txt
           gcov ptest-data_encryption.c > data_encryption_coverage.txt
+          gcov ptest-user_interface.c > user_interface_coverage.txt
+          gcov ptest-database.c > database_coverage.txt
+          gcov ptest-app_data.c > app_data.txt
 
       - name: Upload Coverage Reports
         uses: actions/upload-artifact@v4
@@ -37,3 +40,6 @@ jobs:
           path: |
             main_coverage.txt
             data_encryption_coverage.txt
+            user_interface_coverage.txt
+            database_coverage.txt
+            app_data.txt
