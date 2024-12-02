@@ -18,8 +18,8 @@ jobs:
       - name: Compile with Coverage
         run: |
           gcc -Wall -Werror -g --coverage -I/usr/local/include -I/opt/local/include \
-              -o ptest main.c data_encryption.c user_interface.c database.c app_data.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
-              -lcrypto -lssl
+              -o ptest main.c data_encryption.c user_interface.c database.c app_data.c \
+              -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -lcrypto -lssl -lsqlite3
 
       - name: Execute Tests
         run: |
