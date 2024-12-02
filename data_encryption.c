@@ -1,3 +1,27 @@
+/* 
+Team 20 - Memory Leakers
+Ahmed Yassin, 400536694
+Andy Pak, 400530925
+Patrick Molka, 400537630
+Aditya Rao, 400517325
+
+data_encryption.c contains functions for securely encrypting and decrypting data using the AES-256-CBC encryption algorithm. 
+It includes additional utilities for generating secure random values and deriving cryptographic keys and 
+initialization vectors (IVs) from passwords using PBKDF2 (HMAC-SHA256). 
+
+The encryption process ensures data confidentiality by converting plaintext 
+into ciphertext and vice versa. The file also supports enhanced security 
+through a salt and pepper approach, where additional salt and a magic 
+number are used to further protect the data during encryption.
+
+Contents:
+- AES-256-CBC encryption and decryption functions
+- Key and IV generation using PBKDF2
+- Secure random number generation
+- Salt and pepper encryption for additional security
+- Magic number verification during decryption
+*/
+
 #include "data_encryption.h"
 #include <openssl/evp.h>
 #include <openssl/conf.h>
@@ -5,6 +29,19 @@
 #include <openssl/err.h>
 #include <string.h>
 
+/* 
+encrypt
+This function encrypts the given plaintext using AES-256-CBC encryption. 
+It initializes the encryption operation, encrypts the plaintext, and returns the ciphertext.
+
+Parameters:
+    - plaintext: The text to be encrypted.
+    - plaintext_length: The length of the plaintext.
+    - key: The encryption key used.
+    - iv: The initialization vector for the encryption.
+    - ciphertext: The resulting encrypted text.
+    - ciphertext_len: The length of the resulting ciphertext.
+*/
 int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, const unsigned char *iv, char *ciphertext, int *ciphertext_len)
 {
 
@@ -63,6 +100,19 @@ int encrypt(char *plaintext, int plaintext_length, const unsigned char *key, con
     return 1;
 }
 
+/* 
+decrypt
+This function decrypts the given ciphertext using AES-256-CBC decryption. 
+It initializes the decryption operation, decrypts the ciphertext, and returns the plaintext.
+
+Parameters:
+    - ciphertext: The text to be decrypted.
+    - ciphertext_length: The length of the ciphertext.
+    - key: The decryption key used.
+    - iv: The initialization vector for decryption.
+    - plaintext: The resulting decrypted text.
+    - plaintext_length: The length of the resulting plaintext.
+*/
 int decrypt(char *ciphertext, int ciphertext_length, const unsigned char *key, const unsigned char *iv, char *plaintext, int *plaintext_length)
 {
 
@@ -108,6 +158,15 @@ int decrypt(char *ciphertext, int ciphertext_length, const unsigned char *key, c
     return 1;
 }
 
+/* 
+generate_secure_random
+This function generates a cryptographically secure random value of a specified length. 
+It uses the OpenSSL random number generator to ensure high entropy.
+
+Parameters:
+    - length: The length of the random value to generate.
+    - random: The buffer to store the generated random value.
+*/
 int generate_secure_random(int length, char random[length])
 {
     // Generate the key
@@ -121,6 +180,17 @@ int generate_secure_random(int length, char random[length])
     return 1;
 }
 
+/* 
+generate_key_iv
+This function generates a cryptographic key and initialization vector (IV) 
+from a password and salt using PBKDF2 with HMAC-SHA256. 
+
+Parameters:
+    - password: The user-supplied password to derive the key and IV.
+    - salt: A cryptographically secure salt used in the derivation process.
+    - key: The derived cryptographic key.
+    - iv: The derived initialization vector.
+*/
 void generate_key_iv(const char *password, const unsigned char *salt,
                      unsigned char *key, unsigned char *iv)
 {
@@ -138,6 +208,20 @@ void generate_key_iv(const char *password, const unsigned char *salt,
     memcpy(iv, derived + KEY_LEN, IV_LEN);
 }
 
+/* 
+encrypt_data_salt_pepper
+This function encrypts the given plaintext with additional security 
+by adding a salt and a magic number to the data. It derives the key and IV 
+from a password and salt before performing the encryption.
+
+Parameters:
+    - plaintext: The text to be encrypted.
+    - plaintext_length: The length of the plaintext.
+    - password: The password used to derive the key and IV.
+    - salt: The salt used in the derivation process.
+    - ciphertext: The resulting encrypted text.
+    - ciphertext_len: The length of the resulting ciphertext.
+*/
 int encrypt_data_salt_pepper(char *plaintext, int plaintext_length, const char *password, const unsigned char *salt, char *ciphertext, int *ciphertext_len)
 {
     // Generate key and IV
@@ -171,6 +255,21 @@ int encrypt_data_salt_pepper(char *plaintext, int plaintext_length, const char *
     return encrypt(new_plaintext, new_plaintext_length, key, iv, ciphertext, ciphertext_len);
 }
 
+
+/* 
+decrypt_data_salt_pepper
+This function decrypts the given ciphertext and verifies its integrity 
+by checking a magic number. It derives the key and IV from the password and salt 
+before performing the decryption.
+
+Parameters:
+    - ciphertext: The text to be decrypted.
+    - ciphertext_length: The length of the ciphertext.
+    - password: The password used to derive the key and IV.
+    - salt: The salt used in the derivation process.
+    - plaintext: The resulting decrypted text.
+    - plaintext_length: The length of the resulting plaintext.
+*/
 int decrypt_data_salt_pepper(char *ciphertext, int ciphertext_length, const char *password, const unsigned char *salt, char *plaintext, int *plaintext_length)
 {
     // Generate key and IV
