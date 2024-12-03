@@ -12,15 +12,13 @@ void close_connection(sqlite3 *db);
 int initialize_database(sqlite3 *db);
 
 // Struct for when we get a password
-struct credentials
-{
+struct credentials {
     char *name;
     char *password;
 };
 
 // Struct for when we get a list of passwords
-struct credentials_list
-{
+struct credentials_list {
     struct credentials *entries;
     int length;
 };
