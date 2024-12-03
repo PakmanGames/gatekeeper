@@ -3,3 +3,4 @@
 *.gcov
 ptest
 *.db
+.vscode/
