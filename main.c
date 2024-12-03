@@ -338,10 +338,20 @@ int test_read_sqlite_from_file()
  * - 0 if the application runs successfully.
  * - 1 if the application encounters an error.
  */
-int main()
-{
+int main(int argc, char *argv[]) {
+    // Check for help flag
+    if (argc == 2 && strcmp(argv[1], "--help") == 0) {
+        help();
+        return 0;
+    } else if (argc != 1) {
+        printf("Invalid arguments. Please enter '--help' flag for more information.\n");
+        return 1;
+    } else {
+        return not_main();
+    }
+
+    // For testing various functionality of our project
     // return test_database_stuff();
-    //  return test_encrypt_decrypt();
+    // return test_encrypt_decrypt();
     // return test_read_sqlite_from_file();
-    return not_main();
 }

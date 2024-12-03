@@ -99,13 +99,9 @@ int is_password_valid(const char *password)
  * Returns:
  * - void
  */
-void app_view()
-{
-
-    // Additional app functionalities to be added
+void app_view() {
     int choice;
-    do
-    {
+    do {
         printf("Welcome to your password manager!\n");
 
         list_all_credentials(); // Placeholder function to list all credentials
@@ -119,25 +115,20 @@ void app_view()
 
         // Get user choice
         char vv[10];
-        if (fgets(vv, sizeof(vv), stdin) != NULL)
-        {
+        if (fgets(vv, sizeof(vv), stdin) != NULL) {
             choice = atoi(vv);
 
-            if (choice < 1 || choice > 5)
-            {
+            if (choice < 1 || choice > 5) {
                 printf("Invalid choice. Please enter a number between 1 and 5.\n");
                 continue;
             }
-        }
-        else
-        {
+        } else {
             printf("Invalid input. Please enter a number.\n");
             continue;
         }
 
         // Switch statement to handle user choice
-        switch (choice)
-        {
+        switch (choice) {
         case 1:
             printf("Adding a new credential...\n");
             add_new_credential();
@@ -179,9 +170,7 @@ void app_view()
  * - 0 if the application runs successfully.
  * - 1 if the application encounters an error.
  */
-int not_main()
-{
-
+int not_main() {
     // Declare variables for user choice, database name, password, and input buffer
     int choice;
     char db_name[MAX_NAME_LENGTH];
@@ -192,120 +181,85 @@ int not_main()
     usage();
 
     // Prompt user to enter option 1, 2, or --help
-    printf("Enter your choice (1, 2, or --help): ");
+    printf("Enter your choice (1 or 2): ");
 
     // Get user input as a string to check for --help or number choice
-    if (fgets(input, sizeof(input), stdin) != NULL)
-    {
-
-        // If the input matches "--help" then display help info
-        if (strncmp(input, "--help", 6) == 0)
-        {
-
-            // Call help function
-            help();
-            // Exit after displaying help
-            exit(0);
-        }
-
+    if (fgets(input, sizeof(input), stdin) != NULL) {
         // Convert the input string to an integer for choices 1 and 2
         choice = atoi(input);
 
-        // If user input is invalid
-    }
-    else
-    {
-        printf("Invalid input. Please enter 1, 2, or 'help'.\n"); // Print error
-        exit(1);                                                  // Exit
+        
+    } else { // If user input is invalid
+        printf("Invalid input. Please enter 1 or 2.\n");
+        exit(1);
     }
 
     // If choice is 1 then user selected to access an existing database
-    if (choice == 1)
-    {
+    if (choice == 1) {
 
         // Prompt the user for the database name they want to access
         printf("Enter the name of the existing password database you want to access: ");
 
         // Read the database name and check if it is valid
-        if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n')
-        {
-            printf("Invalid database name. Please try again.\n"); // Print invalid message
-            exit(1);                                              // Exit if name is invalid
+        if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n') {
+            printf("Invalid database name. Please try again.\n");
+            exit(1);
         }
-        db_name[strcspn(db_name, "\n")] = '\0'; // Remove newline character from input
+        db_name[strcspn(db_name, "\n")] = '\0';
 
         // Prompt the user for the database password
         printf("Enter the password for the database: ");
 
         // Read the password and check if it is valid
-        if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n')
-        {
-            printf("Invalid password. Please try again.\n"); // Print invalid message
-            exit(1);                                         // Exit if password is invalid
+        if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n') {
+            printf("Invalid password. Please try again.\n");
+            exit(1);
         }
-        password[strcspn(password, "\n")] = '\0'; // Remove newline character from input
+        password[strcspn(password, "\n")] = '\0';
 
         // Check if the password meets the minimum length requirement
-        if (!is_password_valid(password))
-        {
-            exit(1); // Exit if password is too short
+        if (!is_password_valid(password)) {
+            exit(1);
         }
 
         // Run password verification (with a placeholder function for now)
-        if (verify_password(password, db_name))
-        {
-            app_view(); // Enter app view if verifying the password is successful
-        }
-        else
-        {
+        if (verify_password(password, db_name)) {
+            app_view();
+        } else {
             printf("Incorrect password. Access denied.\n");
-            exit(1); // Exit if verifying the password fails
+            exit(1);
         }
-
-        // If user choice is 2 then user selected to create a new database
-    }
-    else if (choice == 2)
-    {
-
-        // Prompt the user for a name for the new database
+       
+    } else if (choice == 2) { // If user choice is 2 then user selected to create a new database
         printf("Enter a name for the new password database: ");
-
         // Read the user's database name and check if it is valid
-        if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n')
-        {
-            printf("Invalid database name. Please try again.\n"); // Print invalid message
-            exit(1);                                              // Exit if name is invalid
+        if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n') {
+            printf("Invalid database name. Please try again.\n");
+            exit(1);
         }
-        db_name[strcspn(db_name, "\n")] = '\0'; // Remove newline character from input
+        db_name[strcspn(db_name, "\n")] = '\0';
 
-        // Prompt the user for a password for the new database
         printf("Enter a password for the new database: ");
-
         // Read the user's password and check if it is valid
-        if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n')
-        {
-            printf("Invalid password. Please try again.\n"); // Print invalid message
-            exit(1);                                         // Exit if password is invalid
+        if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n') {
+            printf("Invalid password. Please try again.\n");
+            exit(1);
         }
-        password[strcspn(password, "\n")] = '\0'; // Remove newline character from input
+        password[strcspn(password, "\n")] = '\0';
 
         // Check if the password meets the minimum length requirement
-        if (!is_password_valid(password))
-        {
-            exit(1); // Exit if the password is too short
+        if (!is_password_valid(password)) {
+            exit(1);
         }
 
         // Simulate database creation and secure the new database
         printf("Database '%s' created and secured.\n", db_name);
         create_database(password, db_name);
-        app_view(); // Enter app view after successful creation
-    }
-    else
-    {
-        // If the user entered an invalid argument of neither 1,2, or --help
-        printf("Invalid choice. Please enter 1, 2, or 'help'.\n"); // Print invalid choice message
+        app_view();
+    } else { // If user choice is not 1 or 2
+        printf("Invalid choice. Please enter 1 or 2.\n");
         exit(1);
     }
 
-    return 0; // Return 0 indicating successful execution
+    return 0; // Success
 }
