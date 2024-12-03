@@ -1,5 +1,19 @@
-// User interface for password manager app, GateKeeper
-
+/**
+ * Team 20 - Memory Leakers
+ * Ahmed Yassin, 400536694
+ * Andy Pak, 400530925
+ * Patrick Molka, 400537630
+ * Aditya Rao, 400517325
+ * 
+ * user_interface.c contains functions for the user interface of the Password Manager application.
+ * It includes functions for displaying usage instructions, help information, and the application view.
+ * 
+ * Contents:
+ * - Usage instructions and help information functions
+ * - Password validation function
+ * - Application view function
+ * - Main function for the Password Manager application
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +26,16 @@
 #define MIN_PASSWORD_LENGTH 8
 #define MAX_PASSWORD_LENGTH 16
 
-// Function to display usage instructions
+/**
+ * usage
+ * This function displays the usage instructions for the GateKeeper Password Manager application.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - void
+ */
 void usage()
 {
     printf("GateKeeper App Usage:\n");
@@ -21,7 +44,16 @@ void usage()
     printf("Enter '--help' for more information.\n");
 }
 
-// Function to display help information
+/**
+ * help
+ * This function displays help information for the GateKeeper Password Manager application.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - void
+ */
 void help()
 {
     printf("Help - GateKeeper Password Manager:\n");
@@ -32,7 +64,17 @@ void help()
     printf("Password Requirements: Minimum length of %d characters.\n", MIN_PASSWORD_LENGTH);
 }
 
-// Check password length
+/**
+ * is_password_valid
+ * This function checks if a password meets the minimum length requirement.
+ * 
+ * Parameters:
+ * - password: The password to check.
+ * 
+ * Returns:
+ * - 1 if the password is valid.
+ * - 0 if the password is invalid.
+ */
 int is_password_valid(const char *password)
 {
 
@@ -46,8 +88,17 @@ int is_password_valid(const char *password)
     return 1; // If valid, return 1
 }
 
-// Display app view upon successful entry (through successful login or database creation)
-// User can access existing stored passwords, create a new password to store, change existing password, or change top-level password for the database
+/**
+ * app_view
+ * This function displays the application view for the Password Manager.
+ * It allows the user to add, change, or remove credentials, and change the database password.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - void
+ */
 void app_view()
 {
 
@@ -117,7 +168,17 @@ void app_view()
     } while (choice != 5); // Loop to keep the app running until user exits
 }
 
-// Main function
+/**
+ * not_main
+ * This function contains the main logic for the Password Manager application.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - 0 if the application runs successfully.
+ * - 1 if the application encounters an error.
+ */
 int not_main()
 {
 

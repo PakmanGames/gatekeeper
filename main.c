@@ -1,3 +1,17 @@
+/**
+ * Team 20 - Memory Leakers
+ * Ahmed Yassin, 400536694
+ * Andy Pak, 400530925
+ * Patrick Molka, 400537630
+ * Aditya Rao, 400517325
+ * 
+ * main.c contains the main function for the Password Manager application.
+ * It includes functions for testing the data encryption, database, and user interface modules.
+ * 
+ * Contents:
+ * - Main function for the Password Manager application
+ * - Testing functions for data encryption, database, and user interface modules
+ */
 #include <stdio.h>
 #include <string.h>
 #include "data_encryption.h"
@@ -9,6 +23,17 @@
 #include <stdlib.h>
 #endif
 
+/**
+ * print_bloated
+ * This function prints a bloated string.
+ * 
+ * Parameters:
+ * - text: The bloated string to print.
+ * - length: The length of the bloated string.
+ * 
+ * Returns:
+ * - void
+ */
 void print_bloated(char *text, int length)
 {
     for (int i = 0; i < length; i++)
@@ -18,6 +43,17 @@ void print_bloated(char *text, int length)
     printf("\n");
 }
 
+/**
+ * test_encrypt_decrypt
+ * This function tests the encryption and decryption functions.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - 0 if the test was successful.
+ * - 1 if the test failed.
+ */
 int test_encrypt_decrypt()
 {
     // Generate a random key
@@ -79,7 +115,17 @@ int test_encrypt_decrypt()
     return 0;
 }
 
-// testing function to test database functions
+/**
+ * test_database_stuff
+ * This function tests the database functions.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - 0 if the test was successful.
+ * - 1 if the test failed.
+ */
 int test_database_stuff()
 {
     char *database_path = "passwords.db";
@@ -197,6 +243,17 @@ int test_database_stuff()
     return 0;
 }
 
+/**
+ * test_read_sqlite_from_file
+ * This function tests reading an SQLite database from a file.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - 0 if the test was successful.
+ * - 1 if the test failed.
+ */
 int test_read_sqlite_from_file()
 {
 
@@ -270,6 +327,17 @@ int test_read_sqlite_from_file()
     return 0;
 }
 
+/**
+ * main
+ * The main function for the Password Manager application.
+ * 
+ * Parameters:
+ * - None
+ * 
+ * Returns:
+ * - 0 if the application runs successfully.
+ * - 1 if the application encounters an error.
+ */
 int main()
 {
     // return test_database_stuff();
