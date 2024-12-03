@@ -36,12 +36,12 @@
  * Returns:
  * - void
  */
-void usage()
-{
-    printf("GateKeeper App Usage:\n");
-    printf("1 - Select an existing password database\n");
-    printf("2 - Create a new password database\n");
-    printf("Enter '--help' for more information.\n");
+void usage() {
+    printf("Usage: gatekeeper [OPTION]\n");
+    printf("Manage your password databases with GateKeeper.\n\n");
+    printf("Options:\n");
+    printf("  [NONE]      Start gatekeeper application\n");
+    printf("  --help      Display this help and exit\n");
 }
 
 /**
@@ -54,14 +54,21 @@ void usage()
  * Returns:
  * - void
  */
-void help()
-{
-    printf("Help - GateKeeper Password Manager:\n");
-    printf("This application allows you to manage your password database securely.\n");
+void help() {
+    printf("GateKeeper Password Manager - Help\n\n");
+    printf("Usage:\n");
+    printf("  gatekeeper [OPTION]\n\n");
     printf("Options:\n");
-    printf("1 - Select an existing database: Requires database name and password.\n");
-    printf("2 - Create a new database: Prompts you for a new database name and password.\n");
-    printf("Password Requirements: Minimum length of %d characters.\n", MIN_PASSWORD_LENGTH);
+    printf("  [NONE]      Start gatekeeper application\n");
+    printf("  --help      Display this help and exit\n\n");
+    printf("Application Usage (gatekeeper [NONE]):\n");
+    printf("  1           Select an existing password database\n");
+    printf("              Requires database name and password.\n");
+    printf("              Access stored passwords, add, change, or remove credentials.\n\n");
+    printf("  2           Create a new password database\n");
+    printf("              Prompts for a new database name and password.\n\n");
+    printf("Password Requirements:\n");
+    printf("  Minimum length of %d characters.\n", MIN_PASSWORD_LENGTH);
 }
 
 /**
