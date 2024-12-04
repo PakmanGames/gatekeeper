@@ -42,6 +42,9 @@ void usage() {
     printf("Options:\n");
     printf("  [NONE]      Start gatekeeper application\n");
     printf("  --help      Display this help and exit\n");
+    printf("GateKeeper App Usage:\n");    
+    printf("1 - Select an existing password database\n");
+    printf("2 - Create a new password database\n");
 }
 
 /**
@@ -230,11 +233,14 @@ int not_main() {
         }
 
         // Run password verification (with a placeholder function for now)
-        if (verify_password(password, db_name)) {
-            app_view();
-        } else {
-            printf("Incorrect password. Access denied.\n");
-            exit(1);
+        if (verify_password(password, db_name))
+        {
+            app_view(); // Enter app view if verifying the password is successful
+        }
+        else
+        {
+            fprintf(stderr, "Incorrect password. Access denied.\n");
+            exit(1); // Exit if verifying the password fails
         }
        
     } else if (choice == 2) { // If user choice is 2 then user selected to create a new database

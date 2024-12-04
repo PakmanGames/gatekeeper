@@ -2,7 +2,7 @@ name: CI CD - GateKeeper - Test YML
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "patrick-final-testing" ]
 
 jobs:
   build:
@@ -18,17 +18,21 @@ jobs:
       - name: Compile with Coverage
         run: |
           gcc -Wall -Werror -g --coverage -I/usr/local/include -I/opt/local/include \
-              -o ptest main.c data_encryption.c -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu \
-              -lcrypto -lssl
+              -o gatekeeper main.c data_encryption.c user_interface.c database.c app_data.c \
+              -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -lcrypto -lssl -lsqlite3
 
-      - name: Execute Tests
+      - name : Run test_script
         run: |
-          ./ptest || { echo "Test execution failed"; exit 1; }
+          chmod +x ./test_script
+          ./test_script
 
       - name: Generate Coverage Reports
         run: |
-          gcov ptest-main.c > main_coverage.txt
-          gcov ptest-data_encryption.c > data_encryption_coverage.txt
+          gcov gatekeeper-main.c > main_coverage.txt
+          gcov gatekeeper-data_encryption.c > data_encryption_coverage.txt
+          gcov gatekeeper-user_interface.c > user_interface_coverage.txt
+          gcov gatekeeper-database.c > database_coverage.txt
+          gcov gatekeeper-app_data.c > app_data.txt
 
       - name: Upload Coverage Reports
         uses: actions/upload-artifact@v4
@@ -37,3 +41,12 @@ jobs:
           path: |
             main_coverage.txt
             data_encryption_coverage.txt
+            user_interface_coverage.txt
+            database_coverage.txt
+            app_data.txt
+
+      - name: Upload gatekeeper executable
+        uses: actions/upload-artifact@v4 
+        with:
+          name: gatekeeper executable
+          path: gatekeeper

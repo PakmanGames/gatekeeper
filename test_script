@@ -1,1 +1,57 @@
 #!/bin/bash
+
+declare -i tc=0
+declare -i fails=0
+
+test() {
+    tc=tc+1
+
+    local COMMAND=$1
+    local INP=$2
+    local EX_OUT=$3
+    local EX_ERR=$4 
+
+    EX_RET=1
+    if [[ $(cat $EX_ERR) = "" ]]; then
+        EX_RET=0
+    fi
+    $COMMAND < $INP > test_out.txt 2> test_err.txt
+    RET=$?
+    if [[ $RET != $EX_RET ]]; then
+        echo "TC $tc Failed"
+        echo "Returned $RET"
+        echo "-----------"
+        fails=$fails+1
+        return
+    fi
+    DIFF=$(diff test_out.txt $EX_OUT)
+    if [[ $DIFF != '' ]]; then
+        echo "TC $tc Failed Standard Output"
+        echo "$DIFF"
+        echo "-----------"
+        fails=$fails+1
+        return
+    fi
+    DIFF=$(diff test_err.txt $EX_ERR)
+    if [[ $DIFF != '' ]]; then
+        echo "TC $tc Failed Standard Error"
+        echo "$DIFF"
+        echo "-----------"
+        fails=$fails+1
+        return
+    fi
+
+    echo "TC $tc Passed"
+}
+
+# test cases put below
+test './gatekeeper' 'test_cases/data_test.txt' 'test_cases/data_output.txt' 'test_cases/empty.txt' 
+test './gatekeeper' 'test_cases/incorrect_pass.txt' 'test_cases/incorrect_pass_output.txt' 'test_cases/incorrect_pass_err.txt'
+test './gatekeeper' 'test_cases/select_existing.txt' 'test_cases/select_existing_output.txt' 'test_cases/empty.txt'
+test './gatekeeper --help' 'test_cases/empty.txt' 'test_cases/help_output.txt' 'test_cases/empty.txt'
+
+# clean up
+rm test_err.txt test_out.txt
+
+# return code
+exit $fails
