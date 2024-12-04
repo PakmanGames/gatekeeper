@@ -1,4 +1,27 @@
-// password_manager.c
+/*
+Team 20 - Memory Leakers
+Ahmed Yassin, 400536694
+Andy Pak, 400530925
+Patrick Molka, 400537630
+Aditya Rao, 400517325
+
+password_manager.c implements the core functionality for managing passwords in a secure password manager. 
+It includes functions to create, access, update, and change passwords for different services, as well as 
+to manage the top-level password for the database.
+
+Functions included:
+- access_password: Retrieves and displays the password for a specified service.
+- create_password: Adds a new password entry for a service after validation.
+- change_password: Allows the user to change the password for a service.
+- change_top_level_password: Allows the user to change the top-level password
+  for the password manager database, ensuring security with verification steps.
+
+Defines:
+- MAX_PASS_ENTRIES: Maximum number of password entries that can be stored.
+- MAX_NAME_LENGTH: Maximum length for service names.
+- MAX_PASSWORD_LENGTH: Maximum length for passwords.
+*/
+
 
 #include "password_manager.h" 
 #include "user_interface.h"
@@ -8,11 +31,16 @@
 #define MAX_NAME_LENGTH 50
 #define MAX_PASSWORD_LENGTH 50
 
-//Array to store password entries
-PasswordEntry database[MAX_PASS_ENTRIES]; 
+PasswordEntry database[MAX_PASS_ENTRIES]; //Array to store password entries
 int num_pass_entries = 0; //Initialize the password entry count to 0 (track number of password entries)
 
-//Function to access existing stored passwords
+/*
+access_password
+
+Function to access and display a stored password for a given service.
+Prompts the user for the service name, searches the database, and displays the associated password if found. 
+If the service is not found, an error message is displayed.
+*/
 void access_password() {
     char service_name[MAX_NAME_LENGTH]; //Variable to store service name entered by the user
     int found = 0; //Flag to indicate if the service is found
@@ -41,7 +69,13 @@ void access_password() {
     }
 }
 
-//Function to create and store a new password
+/*
+create_password
+
+Function to create and store a new password entry for a service.
+Prompts the user for a service name and password, confirms the password, and 
+stores it in the database if valid. Checks for database full condition.
+*/
 void create_password() {
 
     //If the database is full (exceeds max number of allowed password entries)
@@ -86,7 +120,14 @@ void create_password() {
     }
 }
 
-//Function to change an existing password
+/*
+change_password
+
+Function to change an existing password for a service.
+Prompts the user for the service name, verifies the current password, 
+and allows the user to set a new password. 
+Displays appropriate error messages for invalid current passwords or mismatched/new passwords.
+*/
 void change_password() {
     char service[MAX_NAME_LENGTH]; //Variable for service name
     char current_password[MAX_PASSWORD_LENGTH]; //Variable for current password
@@ -147,7 +188,14 @@ void change_password() {
     }
 }
 
-//Function to change the top-level password of the database
+/*
+change_top_level_password
+
+Function to change the top-level password of the database.
+Prompts the user to verify the current top-level password and sets a new top-level 
+password after confirming it. Displays appropriate error messages if the current 
+password is incorrect or if the new passwords do not match or are invalid.
+*/
 void change_top_level_password() {
     char current_password[MAX_PASSWORD_LENGTH]; //Variable for current top-level password
     char new_password1[MAX_PASSWORD_LENGTH]; //Variable for new top-level password

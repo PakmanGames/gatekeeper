@@ -1,8 +1,13 @@
+Usage: gatekeeper [OPTION]
+Manage your password databases with GateKeeper.
+
+Options:
+  [NONE]      Start gatekeeper application
+  --help      Display this help and exit
 GateKeeper App Usage:
 1 - Select an existing password database
 2 - Create a new password database
-Enter '--help' for more information.
-Enter your choice (1, 2, or --help): Enter a name for the new password database: Enter a password for the new database: Database 'hello' created and secured.
+Enter your choice (1 or 2): Enter a name for the new password database: Enter a password for the new database: Database 'hello' created and secured.
 it work success
 Generating key and IV...
 Welcome to your password manager!
