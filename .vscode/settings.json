@@ -1,8 +1,0 @@
-{
-    "C_Cpp.errorSquiggles": "enabled",
-    "files.associations": {
-        "user_interface.h": "c",
-        "data_encryption.h": "c",
-        "database.h": "c"
-    }
-}

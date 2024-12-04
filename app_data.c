@@ -43,8 +43,7 @@ Parameters:
     - o_password: The password to use for the database.
     - o_db_name: The name of the database file.
 */
-void create_database(char *o_password, char *o_db_name)
-{
+void create_database(char *o_password, char *o_db_name) {
     int status = open_connection(&db, DATABASE_CONN);           // Open a connection to the database
     password = malloc(MAX_PASSWORD_LENGTH * sizeof(char));      // Allocate memory for password
     salt = malloc(SALT_LEN * sizeof(char));                     // Allocate memory for salt
@@ -54,8 +53,7 @@ void create_database(char *o_password, char *o_db_name)
     generate_secure_random(SALT_LEN, (char *)salt);             // Generate a random salt
 
     // Check if the database connection was successful
-    if (!status)
-    {
+    if (!status) {
         printf("Error: Could not open database connection.\n");
         return;
     }
@@ -63,8 +61,7 @@ void create_database(char *o_password, char *o_db_name)
     // Initialize database schema
     status = initialize_database(db);
     // Check if database initialization was successful
-    if (!status)
-    {
+    if (!status) {
         printf("Error: Could not initialize database.\n");
         close_connection(db); // Close database connection if initializion failed
         return;
@@ -107,21 +104,18 @@ and password for each credential.
 Parameters:
     None
 */
-void list_all_credentials()
-{
+void list_all_credentials() {
     // Retrieve stored credentials from database
     struct credentials_list *list = list_passwords(db);
     // Check if credentials retrieval was successful
-    if (!list)
-    {
+    if (!list) {
         printf("Error: Could not retrieve credentials.\n");
         return;
     }
 
     printf("Listing all credentials:\n");
     // Loop through each credential in the list
-    for (int i = 0; i < list->length; i++)
-    {
+    for (int i = 0; i < list->length; i++) {
         printf("%d) Name: %s, Password: %s\n", i, list->entries[i].name, list->entries[i].password);
     }
 }
@@ -134,15 +128,13 @@ and adds it to the database.
 Parameters:
     None
 */
-void add_new_credential()
-{
+void add_new_credential() {
     char name[MAX_NAME_LENGTH];
     char password[MAX_PASSWORD_LENGTH];
 
     printf("Enter the name for the new credential: ");
     // Validate user input for name
-    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n')
-    {
+    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n') {
         printf("Invalid credential name. Please try again.\n");
         return;
     }
@@ -150,16 +142,14 @@ void add_new_credential()
 
     printf("Enter the password for the new credential: ");
     // Validate user input for password
-    if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n')
-    {
+    if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n') {
         printf("Invalid password. Please try again.\n");
         return;
     }
     password[strcspn(password, "\n")] = '\0';
 
     // Check if new credential can be added to the database
-    if (!add_password(db, name, password))
-    {
+    if (!add_password(db, name, password)) {
         printf("Error: Could not add credential.\n");
         return;
     }
@@ -174,22 +164,19 @@ This function allows the user to remove an existing credential by specifying its
 Parameters:
     None
 */
-void remove_credential()
-{
+void remove_credential() {
     char name[MAX_NAME_LENGTH];
 
     printf("Enter the name of the credential to remove: ");
     // Validate user input for name
-    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n')
-    {
+    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n') {
         printf("Invalid credential name. Please try again.\n");
         return;
     }
     name[strcspn(name, "\n")] = '\0';
 
     // Check if the credential can be removed from the database
-    if (!delete_password(db, name))
-    {
+    if (!delete_password(db, name)) {
         printf("Error: Could not remove credential.\n");
         return;
     }
@@ -204,16 +191,14 @@ This function allows the user to change the password for an existing credential.
 Parameters:
     None
 */
-void change_credential()
-{
+void change_credential() {
     char name[MAX_NAME_LENGTH];
     char old_password[MAX_PASSWORD_LENGTH];
     char new_password[MAX_PASSWORD_LENGTH];
 
     printf("Enter the name of the credential to change: ");
     // Validate user input for name
-    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n')
-    {
+    if (fgets(name, MAX_NAME_LENGTH, stdin) == NULL || name[0] == '\n') {
         printf("Invalid credential name. Please try again.\n");
         return;
     }
@@ -221,8 +206,7 @@ void change_credential()
 
     printf("Enter the current password for the credential: ");
     // Validate old password input
-    if (fgets(old_password, MAX_PASSWORD_LENGTH, stdin) == NULL || old_password[0] == '\n')
-    {
+    if (fgets(old_password, MAX_PASSWORD_LENGTH, stdin) == NULL || old_password[0] == '\n') {
         printf("Invalid password. Please try again.\n");
         return;
     }
@@ -230,21 +214,29 @@ void change_credential()
 
     printf("Enter the new password for the credential: ");
     // Validate new password input
-    if (fgets(new_password, MAX_PASSWORD_LENGTH, stdin) == NULL || new_password[0] == '\n')
-    {
+    if (fgets(new_password, MAX_PASSWORD_LENGTH, stdin) == NULL || new_password[0] == '\n') {
         printf("Invalid password. Please try again.\n");
         return;
     }
     new_password[strcspn(new_password, "\n")] = '\0';
 
-    // Check if the password can be updated in the database
-    if (!update_password(db, name, old_password, new_password))
-    {
-        printf("Error: Could not change credential.\n");
-        return;
+    struct credentials *cred = get_password(db, name);
+    // Check if the credential exists in the database
+    if (!cred) {
+        printf("Error: Could not find credential.\n");
+        exit(1);
+    } else if (strcmp(cred->password, old_password) != 0) { // Check if the old password is correct
+        printf("Error: Incorrect old password.\n");
+        exit(1);
     }
 
-    printf("Credential changed successfully.\n");
+    // Check if the password can be updated in the database
+    if (!update_password(db, name, old_password, new_password)) {
+        printf("Error: Could not change credential.\n");
+        exit(1);
+    } else {
+        printf("Credential changed successfully.\n");
+    }
 }
 
 /* 
@@ -254,18 +246,15 @@ This function allows the user to change the password used to encrypt the databas
 Parameters:
     None
 */
-void change_database_password()
-{
-    if (password != NULL)
-    {
+void change_database_password() {
+    if (password != NULL) {
         free(password); // Free the old password memory
     }
     password = malloc(MAX_PASSWORD_LENGTH * sizeof(char)); // Allocate new memory for the password
 
     printf("Enter the new password for the database: ");
     // Validate user input for new password
-    if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n')
-    {
+    if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n') {
         printf("Invalid password. Please try again.\n");
         return;
     }

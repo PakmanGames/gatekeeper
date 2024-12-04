@@ -2,4 +2,6 @@
 *.gcno
 *.gcov
 ptest
+gatekeeper
 *.db
+.vscode/
