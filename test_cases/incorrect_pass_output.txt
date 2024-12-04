@@ -2,5 +2,4 @@ GateKeeper App Usage:
 1 - Select an existing password database
 2 - Create a new password database
 Enter '--help' for more information.
-Enter your choice (1, 2, or --help): Enter the name of the existing password database you want to access: Enter the password for the database: Error: Could not open file for reading.
-Incorrect password. Access denied.
+Enter your choice (1, 2, or --help): Enter the name of the existing password database you want to access: Enter the password for the database: Error: Could not decrypt database.

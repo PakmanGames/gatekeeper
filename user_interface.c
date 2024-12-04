@@ -197,7 +197,7 @@ int not_main()
         }
         else
         {
-            printf("Incorrect password. Access denied.\n");
+            fprintf(stderr, "Incorrect password. Access denied.\n");
             exit(1); // Exit if verifying the password fails
         }
 
