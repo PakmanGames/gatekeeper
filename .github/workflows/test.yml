@@ -24,14 +24,15 @@ jobs:
       - name : Run test_script
         run: |
           chmod +x ./test_script
+          ./test_script
 
       - name: Generate Coverage Reports
         run: |
-          chmod +x gcov ptest-main.c > main_coverage.txt
-          chmod +x gcov ptest-data_encryption.c > data_encryption_coverage.txt
-          chmod +x gcov ptest-user_interface.c > user_interface_coverage.txt
-          chmod +x gcov ptest-database.c > database_coverage.txt
-          chmod +x gcov ptest-app_data.c > app_data.txt
+          gcov ptest-main.c > main_coverage.txt
+          gcov ptest-data_encryption.c > data_encryption_coverage.txt
+          gcov ptest-user_interface.c > user_interface_coverage.txt
+          gcov ptest-database.c > database_coverage.txt
+          gcov ptest-app_data.c > app_data.txt
 
       - name: Upload Coverage Reports
         uses: actions/upload-artifact@v4
