@@ -46,7 +46,8 @@ test() {
 
 # test cases put below
 test './ptest' 'test_cases/data_test.txt' 'test_cases/data_output.txt' 'test_cases/empty.txt' 
-test './ptest' 'test_cases/incorrect_pass.txt' 'test_cases/incorrect_pass_output.txt' 'test_cases/empty.txt'
+# test './ptest' 'test_cases/incorrect_pass.txt' 'test_cases/incorrect_pass_output.txt' 'test_cases/empty.txt'
+test './ptest' 'test_cases/select_existing.txt' 'test_cases/select_existing_output.txt' 'test_cases/empty.txt'
 
 # clean up
 rm test_err.txt test_out.txt
