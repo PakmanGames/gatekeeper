@@ -23,7 +23,7 @@ jobs:
 
       - name : Run test_script
         run: |
-          ./test_script
+          chmod +x ./test_script
 
       - name: Generate Coverage Reports
         run: |
