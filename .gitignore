@@ -3,3 +3,5 @@
 *.gcov
 ptest
 *.db
+*.gcda
+regs

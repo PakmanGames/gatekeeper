@@ -21,9 +21,9 @@ jobs:
               -o ptest main.c data_encryption.c user_interface.c database.c app_data.c \
               -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -lcrypto -lssl -lsqlite3
 
-      - name: Execute Tests
+      - name : Run test_script
         run: |
-          ./ptest || { echo "Test execution failed"; exit 1; }
+          ./test_script
 
       - name: Generate Coverage Reports
         run: |
