@@ -55,6 +55,11 @@ test './gatekeeper' 'test_cases/select_existing.txt' 'test_cases/test_out3.txt' 
 test './gatekeeper --help' 'test_cases/empty.txt' 'test_cases/test_out4.txt' 'test_cases/empty.txt'
 # too many args
 test './gatekeeper hi hello' 'test_cases/empty.txt' 'test_cases/empty.txt' 'test_cases/test_err5.txt' 
+# 3 inp
+test './gatekeeper' 'test_cases/3_b.txt' 'test_cases/test_out6.txt' 'test_cases/test_err6.txt'
+#
+#test './gatekeeper' 'test_cases/invalid_name.txt' 'test_cases/test_out7.txt' 'test_cases/empty.txt'
+
 
 # clean up
 rm test_err.txt test_out.txt
