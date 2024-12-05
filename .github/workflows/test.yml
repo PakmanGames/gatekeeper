@@ -21,10 +21,16 @@ jobs:
               -o gatekeeper main.c data_encryption.c user_interface.c database.c app_data.c \
               -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -lcrypto -lssl -lsqlite3
 
-      - name : Run test_script
+      - name: Run test_script
         run: |
           chmod +x ./test_script
-          ./test_script
+          ./test_script > test_results.txt
+          
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4 
+        with:
+          name: test results
+          path: test_results.txt
 
       - name: Generate Coverage Reports
         run: |
