@@ -1,4 +1,4 @@
-INCLUDE_FLAGS=-Wall -Werror -g -I/usr/local/include -I/opt/local/include
+INCLUDE_FLAGS=--coverage -Wall -Werror -g -I/usr/local/include -I/opt/local/include
 LIBRARY_FLAGS=-L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -lcrypto -lssl -lsqlite3
 
 gatekeeper: main.c data_encryption.h data_encryption.c user_interface.c user_interface.h database.c database.h app_data.c app_data.h

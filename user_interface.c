@@ -161,7 +161,7 @@ void app_view() {
             exit(0);
             return;
         default:
-            printf("Invalid choice. Please enter a number between 1 and 6.\n");
+            printf("Invalid choice. Please enter a number between 1 and 5.\n");
         }
 
         save_database(); // Placeholder function to save the database
@@ -200,7 +200,7 @@ int not_main() {
 
         
     } else { // If user input is invalid
-        printf("Invalid input. Please enter 1 or 2.\n");
+        fprintf(stderr, "Invalid input. Please enter 1 or 2.\n");
         exit(1);
     }
 
@@ -212,7 +212,7 @@ int not_main() {
 
         // Read the database name and check if it is valid
         if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n') {
-            printf("Invalid database name. Please try again.\n");
+            fprintf(stderr, "Invalid database name. Please try again.\n");
             exit(1);
         }
         db_name[strcspn(db_name, "\n")] = '\0';
@@ -247,7 +247,7 @@ int not_main() {
         printf("Enter a name for the new password database: ");
         // Read the user's database name and check if it is valid
         if (fgets(db_name, MAX_NAME_LENGTH, stdin) == NULL || db_name[0] == '\n') {
-            printf("Invalid database name. Please try again.\n");
+            fprintf(stderr, "Invalid database name. Please try again.\n");
             exit(1);
         }
         db_name[strcspn(db_name, "\n")] = '\0';
@@ -255,13 +255,13 @@ int not_main() {
         printf("Enter a password for the new database: ");
         // Read the user's password and check if it is valid
         if (fgets(password, MAX_PASSWORD_LENGTH, stdin) == NULL || password[0] == '\n') {
-            printf("Invalid password. Please try again.\n");
+            fprintf(stderr, "Invalid password. Please try again.\n");
             exit(1);
         }
         password[strcspn(password, "\n")] = '\0';
 
         // Check if the password meets the minimum length requirement
-        if (!is_password_valid(password)) {
+        if (!is_password_valid(password)) { 
             exit(1);
         }
 
@@ -270,7 +270,7 @@ int not_main() {
         create_database(password, db_name);
         app_view();
     } else { // If user choice is not 1 or 2
-        printf("Invalid choice. Please enter 1 or 2.\n");
+        fprintf(stderr, "Invalid choice. Please enter 1 or 2.\n");
         exit(1);
     }
 

@@ -45,10 +45,21 @@ test() {
 }
 
 # test cases put below
+#general test case
 test './gatekeeper' 'test_cases/data_test.txt' 'test_cases/data_output.txt' 'test_cases/empty.txt' 
-test './gatekeeper' 'test_cases/incorrect_pass.txt' 'test_cases/incorrect_pass_output.txt' 'test_cases/incorrect_pass_err.txt'
-test './gatekeeper' 'test_cases/select_existing.txt' 'test_cases/select_existing_output.txt' 'test_cases/empty.txt'
-test './gatekeeper --help' 'test_cases/empty.txt' 'test_cases/help_output.txt' 'test_cases/empty.txt'
+# incorrect password testcase
+test './gatekeeper' 'test_cases/incorrect_pass.txt' 'test_cases/test_out2.txt' 'test_cases/test_err2.txt' 
+# use existing db tc
+test './gatekeeper' 'test_cases/select_existing.txt' 'test_cases/test_out3.txt' 'test_cases/empty.txt'
+# help flag tc
+test './gatekeeper --help' 'test_cases/empty.txt' 'test_cases/test_out4.txt' 'test_cases/empty.txt'
+# too many args
+test './gatekeeper hi hello' 'test_cases/empty.txt' 'test_cases/empty.txt' 'test_cases/test_err5.txt' 
+# 3 inp
+test './gatekeeper' 'test_cases/3_b.txt' 'test_cases/test_out6.txt' 'test_cases/test_err6.txt'
+#
+#test './gatekeeper' 'test_cases/invalid_name.txt' 'test_cases/test_out7.txt' 'test_cases/empty.txt'
+
 
 # clean up
 rm test_err.txt test_out.txt

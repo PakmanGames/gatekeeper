@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #endif
 
-/**
+/*
  * print_bloated
  * This function prints a bloated string.
  * 
@@ -34,6 +34,7 @@
  * Returns:
  * - void
  */
+/*
 void print_bloated(char *text, int length)
 {
     for (int i = 0; i < length; i++)
@@ -41,7 +42,8 @@ void print_bloated(char *text, int length)
         printf("%c", text[i]);
     }
     printf("\n");
-}
+}*/
+
 
 /**
  * test_encrypt_decrypt
@@ -54,6 +56,7 @@ void print_bloated(char *text, int length)
  * - 0 if the test was successful.
  * - 1 if the test failed.
  */
+/*
 int test_encrypt_decrypt()
 {
     // Generate a random key
@@ -114,7 +117,7 @@ int test_encrypt_decrypt()
 
     return 0;
 }
-
+*/
 /**
  * test_database_stuff
  * This function tests the database functions.
@@ -126,6 +129,7 @@ int test_encrypt_decrypt()
  * - 0 if the test was successful.
  * - 1 if the test failed.
  */
+/*
 int test_database_stuff()
 {
     char *database_path = "passwords.db";
@@ -241,7 +245,7 @@ int test_database_stuff()
     }
 
     return 0;
-}
+}*/
 
 /**
  * test_read_sqlite_from_file
@@ -254,78 +258,81 @@ int test_database_stuff()
  * - 0 if the test was successful.
  * - 1 if the test failed.
  */
-int test_read_sqlite_from_file()
-{
 
-    FILE *un_file = fopen("unenc.db", "rb");
-    fseek(un_file, 0, SEEK_END);
-    int length = ftell(un_file);
-    fseek(un_file, 0, SEEK_SET);
-
-    char *plaintext = malloc(length * sizeof(char));
-    // int plaintext_length = length;
-    if (fread(plaintext, 1, length, un_file) != length)
-    {
-        printf("Error: Could not read plaintext from file.\n");
-        free(plaintext);
-        fclose(un_file);
-        return 0;
-    }
-    fclose(un_file);
-
-    sqlite3 *db;
-#define DATABASE_CONN ":memory:"
-
-    if (!open_connection(&db, DATABASE_CONN))
-    {
-        printf("Error: Could not open database connection.\n");
-        return 0;
-    }
-
-    int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, length, length, SQLITE_DESERIALIZE_FREEONCLOSE);
-    if (status != SQLITE_OK)
-    {
-        printf("Error: Could not deserialize database. SQLite error code: %d, Message: %s\n", status, sqlite3_errmsg(db));
-        return 0;
-    }
-
-    // Check if db is valid
-    /*if (db != NULL)
-    {
-        int status_check = sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0);
-        if (status_check == SQLITE_OK)
-        {
-            printf("Database connection is valid.\n");
-        }
-        else
-        {
-            printf("Database connection is not valid.\n");
-        }
-    }
-    else
-    {
-        printf("Error: db pointer is null.\n");
-    }*/
-
-    // Run a simple query to check database validity
-    sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, "SELECT 1;", -1, &stmt, NULL);
-    if (rc != SQLITE_OK)
-    {
-        printf("Error preparing statement after deserialization: %s\n", sqlite3_errmsg(db));
-    }
-    else
-    {
-        printf("Statement prepared successfully.\n");
-        sqlite3_step(stmt);
-        sqlite3_finalize(stmt);
-    }
-
-    printf("Password verified. Access granted.\n");
-    free(plaintext);
-    printf("SQLITE verison: %s\n", sqlite3_libversion());
-    return 0;
-}
+/*
+*   int test_read_sqlite_from_file()
+*   {
+*   
+*       FILE *un_file = fopen("unenc.db", "rb");
+*       fseek(un_file, 0, SEEK_END);
+*       int length = ftell(un_file);
+*       fseek(un_file, 0, SEEK_SET);
+*   
+*       char *plaintext = malloc(length * sizeof(char));
+*       // int plaintext_length = length;
+*       if (fread(plaintext, 1, length, un_file) != length)
+*       {
+*           printf("Error: Could not read plaintext from file.\n");
+*           free(plaintext);
+*           fclose(un_file);
+*           return 0;
+*       }
+*       fclose(un_file);
+*   
+*       sqlite3 *db;
+*   #define DATABASE_CONN ":memory:"
+*   
+*       if (!open_connection(&db, DATABASE_CONN))
+*       {
+*           printf("Error: Could not open database connection.\n");
+*           return 0;
+*       }
+*   
+*       int status = sqlite3_deserialize(db, "main", (unsigned char *)plaintext, length, length, SQLITE_DESERIALIZE_FREEONCLOSE);
+*       if (status != SQLITE_OK)
+*       {
+*           printf("Error: Could not deserialize database. SQLite error code: %d, Message: %s\n", status, sqlite3_errmsg(db));
+*           return 0;
+*       }
+*   
+*       // Check if db is valid
+*       if (db != NULL)
+*       {
+*           int status_check = sqlite3_db_status(db, SQLITE_DBSTATUS_LOOKASIDE_USED, NULL, NULL, 0);
+*           if (status_check == SQLITE_OK)
+*           {
+*               printf("Database connection is valid.\n");
+*           }
+*           else
+*           {
+*               printf("Database connection is not valid.\n");
+*           }
+*       }
+*       else
+*       {
+*           printf("Error: db pointer is null.\n");
+*       }
+*   
+*       // Run a simple query to check database validity
+*       sqlite3_stmt *stmt;
+*       int rc = sqlite3_prepare_v2(db, "SELECT 1;", -1, &stmt, NULL);
+*       if (rc != SQLITE_OK)
+*       {
+*           printf("Error preparing statement after deserialization: %s\n", sqlite3_errmsg(db));
+*       }
+*       else
+*       {
+*           printf("Statement prepared successfully.\n");
+*           sqlite3_step(stmt);
+*           sqlite3_finalize(stmt);
+*       }
+*   
+*       printf("Password verified. Access granted.\n");
+*       free(plaintext);
+*       printf("SQLITE verison: %s\n", sqlite3_libversion());
+*       return 0;
+*   }
+*/
 
 /**
  * main
@@ -344,7 +351,7 @@ int main(int argc, char *argv[]) {
         help();
         return 0;
     } else if (argc != 1) {
-        printf("Invalid arguments. Please enter '--help' flag for more information.\n");
+        fprintf(stderr, "Invalid arguments. Please enter '--help' flag for more information.\n");
         return 1;
     } else {
         return not_main();
