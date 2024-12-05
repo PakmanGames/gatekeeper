@@ -1,0 +1,19 @@
+GateKeeper Password Manager - Help
+
+Usage:
+  gatekeeper [OPTION]
+
+Options:
+  [NONE]      Start gatekeeper application
+  --help      Display this help and exit
+
+Application Usage (gatekeeper [NONE]):
+  1           Select an existing password database
+              Requires database name and password.
+              Access stored passwords, add, change, or remove credentials.
+
+  2           Create a new password database
+              Prompts for a new database name and password.
+
+Password Requirements:
+  Minimum length of 8 characters.

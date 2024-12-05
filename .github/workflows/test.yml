@@ -24,7 +24,7 @@ jobs:
       - name : Run test_script
         run: |
           chmod +x ./test_script
-          ./test_script
+          ./test_script > test_report.txt
 
       - name: Generate Coverage Reports
         run: |
